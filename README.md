@@ -11,6 +11,10 @@ The Nicho website is a landing page that provides an overview of the Nicho toolk
 *   **Testimonials:** A section with testimonials from happy users.
 *   **FAQ:** A section with frequently asked questions about the Nicho toolkit.
 
+## Deployment
+
+For instructions on how to deploy the Nicho website and backend, and how to load the Chrome extension, please see the [Deployment Guide](DEPLOYMENT.md).
+
 ## Chrome Extension
 
 The Nicho Chrome Extension is a powerful tool that provides creators with a wide range of features to help them research videos and channels, automate their workflow, and gain valuable insights. The extension includes the following features:
