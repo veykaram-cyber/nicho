@@ -1,39 +1,52 @@
 // background.js
 
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'findSimilarChannels') {
-    // In a real extension, you would fetch this data from an API.
-    const similarChannels = [
-      { name: 'Channel 1', subs: '1M', avgViews: '100K' },
-      { name: 'Channel 2', subs: '2M', avgViews: '200K' },
-      { name: 'Channel 3', subs: '3M', avgViews: '300K' },
-    ];
-    sendResponse({ channels: similarChannels });
+    const channelId = getChannelIdFromUrl(sender.tab.url);
+    fetch(`${BACKEND_URL}/similar-channels`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelId: channelId }),
+    })
+    .then(response => response.json())
+    .then(data => sendResponse({ channels: data }))
+    .catch(error => console.error('Error fetching similar channels:', error));
+    return true;
   } else if (request.action === 'getChannelAnalytics') {
-    // In a real extension, you would fetch this data from an API.
-    const channelAnalytics = {
-      avgViews: '150K',
-      subs: '1.5M',
-      revenue: '$5K - $10K',
-    };
-    sendResponse({ analytics: channelAnalytics });
+    const channelId = getChannelIdFromUrl(sender.tab.url);
+    fetch(`${BACKEND_URL}/channel-stats`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelId: channelId }),
+    })
+    .then(response => response.json())
+    .then(data => sendResponse({ analytics: data }))
+    .catch(error => console.error('Error fetching channel analytics:', error));
+    return true;
   } else if (request.action === 'getCombinedAnalytics') {
-    const combinedAnalytics = request.urls.map(url => ({
-      name: url.split('/').pop() || 'Unknown Channel', // Extract channel name from URL
-      subs: `${Math.floor(Math.random() * 5) + 1}M`,
-      avgViews: `${Math.floor(Math.random() * 200) + 50}K`,
-      revenue: `$${Math.floor(Math.random() * 10) + 1}K - $${Math.floor(Math.random() * 20) + 10}K`,
-      netProfit: `$${Math.floor(Math.random() * 5) + 1}K - $${Math.floor(Math.random() * 10) + 5}K`, // Assuming a 50% profit margin for simplicity
-    }));
-    sendResponse({ analytics: combinedAnalytics });
+    const channelIds = request.urls.map(url => getChannelIdFromUrl(url)).filter(id => id);
+    fetch(`${BACKEND_URL}/combined-channel-stats`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelIds: channelIds }),
+    })
+    .then(response => response.json())
+    .then(data => sendResponse({ analytics: data }))
+    .catch(error => console.error('Error fetching combined channel stats:', error));
+    return true;
   } else if (request.action === 'getAudienceData') {
-    const audienceData = {
-      avgViews: '175K',
-      demographics: '60% Male, 40% Female; 18-35 years old',
-    };
-    sendResponse({ data: audienceData });
+    // Placeholder - requires more advanced API access
+    sendResponse({ data: { avgViews: 'N/A', demographics: 'N/A' } });
   } else if (request.action === 'getMonetizationStatus') {
-    sendResponse({ status: 'Yes' });
+    // Placeholder - not directly available via public API
+    sendResponse({ status: 'N/A' });
   }
-  return true; // Indicates that the response is sent asynchronously
+  return true;
 });
+
+function getChannelIdFromUrl(url) {
+  const match = url.match(/youtube\.com\/(channel|c)\/([^\/]+)/);
+  return match ? match[2] : null;
+}

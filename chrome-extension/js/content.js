@@ -24,9 +24,6 @@ function displaySimilarChannels(channels) {
   console.log('Similar Channels:', channels);
 }
 
-// Run the script when the page is loaded
-addSimilarChannelsButton();
-
 function addChannelAnalytics() {
   const channelHeader = document.querySelector('#channel-header .ytd-c4-tabbed-header-renderer');
   if (channelHeader && !document.getElementById('channel-analytics-section')) {
@@ -67,7 +64,6 @@ function addFilterPanel() {
       <label>Min Subs: <input type="number" placeholder="e.g., 1000"></label>
       <button>Apply Filters</button>
     `;
-    // Prepend to the content container so it appears at the top
     container.prepend(filterPanel);
   }
 }
@@ -94,7 +90,6 @@ function addThumbnailTools() {
         e.stopPropagation();
         const img = thumbnail.querySelector('img');
         if (img && img.src) {
-          // Get the highest resolution thumbnail URL
           const url = img.src.replace(/hqdefault|default|sddefault|mqdefault/, 'maxresdefault');
           window.open(url, '_blank');
         }
@@ -197,7 +192,6 @@ function addMonetizationStatus() {
 }
 
 function addSwipeFileButton() {
-  // Add to video pages
   const videoActions = document.querySelector('#menu.ytd-video-primary-info-renderer');
   if (videoActions && !document.getElementById('nicho-save-video-btn')) {
     const btn = document.createElement('button');
@@ -217,7 +211,6 @@ function addSwipeFileButton() {
     });
   }
 
-  // Add to channel pages
   const channelHeader = document.querySelector('#channel-header .ytd-c4-tabbed-header-renderer');
   if (channelHeader && !document.getElementById('nicho-save-channel-btn')) {
     const btn = document.createElement('button');
@@ -239,7 +232,6 @@ function addSwipeFileButton() {
 }
 
 function addAdPlacerButton() {
-  // This is a simplified selector. The actual upload page is more complex.
   const uploadPage = document.querySelector('ytcp-uploads-dialog');
   if (uploadPage && !document.getElementById('nicho-ad-placer-btn')) {
     const btn = document.createElement('button');
@@ -255,9 +247,7 @@ function addABTestingUI() {
     if (!thumbnail.querySelector('.nicho-ab-test-ui')) {
       const ui = document.createElement('div');
       ui.className = 'nicho-ab-test-ui';
-      ui.innerHTML = `
-        <button>A/B Test</button>
-      `;
+      ui.innerHTML = `<button>A/B Test</button>`;
       thumbnail.appendChild(ui);
     }
   });
@@ -296,7 +286,6 @@ function addSimilarVideos() {
   }
 }
 
-// Since YouTube is a single-page application, we need to observe for changes in the DOM
 const observer = new MutationObserver(() => {
   addSimilarChannelsButton();
   addChannelAnalytics();
@@ -308,44 +297,10 @@ const observer = new MutationObserver(() => {
   addAudienceData();
   addMonetizationStatus();
   addSwipeFileButton();
-});
-observer.observe(document.body, { childList: true, subtree: a/chrome-extension/js/content.js
-+++ b/chrome-extension/js/content.js
-@@ -171,6 +171,26 @@
-   }
- }
-
-+function addSwipeFileButton() {
-+  // Add to video pages
-+  const videoActions = document.querySelector('#menu.ytd-video-primary-info-renderer');
-+  if (videoActions && !document.getElementById('nicho-save-video-btn')) {
-+    const btn = document.createElement('button');
-+    btn.id = 'nicho-save-video-btn';
-+    btn.textContent = 'Save to Swipe File';
-+    videoActions.appendChild(btn);
-+  }
-+
-+  // Add to channel pages
-+  const channelHeader = document.querySelector('#channel-header .ytd-c4-tabbed-header-renderer');
-+  if (channelHeader && !document.getElementById('nicho-save-channel-btn')) {
-+    const btn = document.createElement('button');
-+    btn.id = 'nicho-save-channel-btn';
-+    btn.textContent = 'Save to Swipe File';
-+    channelHeader.appendChild(btn);
-+  }
-+}
-+
- // Since YouTube is a single-page application, we need to observe for changes in the DOM
- const observer = new MutationObserver(() => {
-   addSimilarChannelsButton();
-@@ -182,5 +202,6 @@
-   addCommentSentimentButton();
-   addAudienceData();
-   addMonetizationStatus();
-+  addSwipeFileButton();
   addAdPlacerButton();
   addABTestingUI();
   addShortsAnalytics();
   addSimilarVideos();
- });
- observer.observe(document.body, { childList: true, subtree: true });
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
