@@ -105,21 +105,46 @@ app.post('/combined-channel-stats', async (req, res) => {
 
   try {
     const response = await youtube.channels.list({
-      part: 'statistics',
+      part: 'statistics,snippet',
       id: channelIds.join(','),
     });
 
     const stats = response.data.items.map(item => ({
       channelId: item.id,
+      name: item.snippet.title,
       subs: item.statistics.subscriberCount,
       avgViews: item.statistics.viewCount,
       revenue: '$5K - $10K', // Placeholder
+      netProfit: '$2.5K - $5K', // Placeholder
     }));
 
     res.json(stats);
   } catch (error) {
     console.error('Error fetching combined channel stats:', error);
     res.status(500).json({ error: 'Failed to fetch combined channel stats' });
+  }
+});
+
+app.post('/resolve-handle', async (req, res) => {
+  const { handle } = req.body;
+  if (!handle) {
+    return res.status(400).json({ error: 'handle is required' });
+  }
+  try {
+    const response = await youtube.search.list({
+      part: 'snippet',
+      q: handle,
+      type: 'channel',
+      maxResults: 1,
+    });
+    if (response.data.items.length > 0) {
+      res.json({ channelId: response.data.items[0].id.channelId });
+    } else {
+      res.status(404).json({ error: 'Handle not found' });
+    }
+  } catch (error) {
+    console.error('Error resolving handle:', error);
+    res.status(500).json({ error: 'Failed to resolve handle' });
   }
 });
 

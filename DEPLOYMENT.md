@@ -45,7 +45,7 @@ The Chrome extension needs to be configured to communicate with your deployed ba
 1.  **Open the extension's code:** Navigate to `chrome-extension/js/background.js`.
 2.  **Change the `BACKEND_URL`:** On the first line, you'll see `const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';`. For a production build, you would replace this with your deployed backend URL. For now, you can manually change it to your Render URL:
     ```javascript
-    const BACKEND_URL = 'https://your-render-backend-url.onrender.com';
+    const BACKEND_URL = 'https://nicho-backend.onrender.com';
     ```
     *Note: A more advanced setup would involve a build step that replaces this variable automatically.*
 
